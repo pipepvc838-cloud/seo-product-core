@@ -1,0 +1,22 @@
+{
+  "artifact": "product-m01.backend.request",
+  "contract_version": "1.0",
+  "additional_fields": false,
+  "required": ["contract_version", "request_id", "task_id", "correlation_id", "operation", "payload"],
+  "fields": {
+    "contract_version": {"type": "string", "const": "1.0", "nullable": false},
+    "request_id": {"type": "string", "min_length": 1, "nullable": false},
+    "task_id": {"type": "string", "min_length": 1, "nullable": false},
+    "correlation_id": {"type": "string", "min_length": 1, "nullable": false},
+    "operation": {
+      "type": "object", "nullable": false, "additional_fields": false,
+      "required": ["operation_id", "operation_type"],
+      "fields": {
+        "operation_id": {"type": "string", "min_length": 1, "nullable": false},
+        "operation_type": {"type": "string", "min_length": 1, "nullable": false}
+      }
+    },
+    "payload": {"type": "object", "nullable": false, "additional_fields": true},
+    "context": {"type": "object", "nullable": true, "additional_fields": true}
+  }
+}

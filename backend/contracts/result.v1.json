@@ -1,0 +1,16 @@
+{
+  "artifact": "product-m01.backend.result",
+  "contract_version": "1.0",
+  "additional_fields": false,
+  "required": ["contract_version", "request_id", "task_id", "correlation_id", "status", "result"],
+  "fields": {
+    "contract_version": {"type": "string", "const": "1.0", "nullable": false},
+    "request_id": {"type": "string", "min_length": 1, "nullable": false},
+    "task_id": {"type": "string", "min_length": 1, "nullable": false},
+    "correlation_id": {"type": "string", "min_length": 1, "nullable": false},
+    "status": {"type": "string", "enum": ["SUCCESS"], "nullable": false},
+    "result": {"type": "object", "nullable": false, "additional_fields": true},
+    "evidence": {"type": "object", "nullable": true, "additional_fields": true},
+    "metadata": {"type": "object", "nullable": true, "additional_fields": true}
+  }
+}

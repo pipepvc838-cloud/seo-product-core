@@ -1,0 +1,14 @@
+{
+  "artifact": "product-m01.backend.runtime-properties",
+  "contract_version": "1.0",
+  "allowed_states": ["UNRESOLVED", "EVIDENCE_REQUIRED"],
+  "properties": {
+    "timeout": {"state": "EVIDENCE_REQUIRED", "value": null, "evidence_ref": null},
+    "retry_backoff": {"state": "EVIDENCE_REQUIRED", "value": null, "evidence_ref": null},
+    "max_attempts": {"state": "EVIDENCE_REQUIRED", "value": null, "evidence_ref": null},
+    "idempotency_behavior": {"state": "EVIDENCE_REQUIRED", "value": null, "evidence_ref": null},
+    "authentication_authorization": {"state": "EVIDENCE_REQUIRED", "value": null, "evidence_ref": null},
+    "protocol_api_schema_compatibility": {"state": "EVIDENCE_REQUIRED", "value": null, "evidence_ref": null}
+  },
+  "rule": "Concrete runtime values MUST NOT be supplied until accepted technical evidence resolves the property."
+}
