@@ -1,0 +1,69 @@
+{
+  "contract_version": "robot-execution-model.v1",
+  "authority": {
+    "source_refs": ["SRC-GOV-001", "SRC-EXEC-001", "SRC-REPO-ROBOT-001", "SRC-CONTRACT-PM01-BE-001"],
+    "backend_contract_handoff": "SRC-CONTRACT-PM01-BE-001",
+    "backend_repository_access": false
+  },
+  "identity": {
+    "task_id": "immutable non-empty string",
+    "owner_chat_id": "single owner",
+    "sequence": "non-negative integer",
+    "idempotency_key": "task_id + canonical_input_fingerprint"
+  },
+  "states": ["PLANNED", "READY", "IN_PROGRESS", "TESTING", "BLOCKED", "DONE"],
+  "transitions": {
+    "PLANNED": ["READY"],
+    "READY": ["IN_PROGRESS", "BLOCKED"],
+    "IN_PROGRESS": ["TESTING", "BLOCKED"],
+    "TESTING": ["DONE", "BLOCKED"],
+    "BLOCKED": ["READY"],
+    "DONE": []
+  },
+  "eligibility": {
+    "required_state": "READY",
+    "requires_owner_match": true,
+    "requires_all_dependencies_done": true,
+    "requires_approved_sources_and_capabilities": true,
+    "requires_acceptance_tests_and_stop_gate": true
+  },
+  "dependency_semantics": {
+    "dependency_reference": "Task-ID",
+    "satisfied_only_by": "canonical DONE with accepted evidence",
+    "reject_missing": true,
+    "reject_cycles": true
+  },
+  "ordering": {
+    "primary": "sequence ascending",
+    "tie_breaker": "task_id lexicographic ascending",
+    "ambiguous_order": "BLOCK"
+  },
+  "idempotency": {
+    "duplicate_claim_prevention": "only canonical READY may transition to IN_PROGRESS",
+    "rerun_rule": "re-read canonical state and evidence; do not replay completed effects",
+    "done_reexecution": "forbidden without Manager-authorized corrective flow"
+  },
+  "retry": {
+    "allowed_classes": ["retryable_transient"],
+    "forbidden_classes": ["authority", "source", "dependency", "architecture", "unsafe", "terminal"],
+    "max_attempts": 3,
+    "same_identity_and_input_required": true
+  },
+  "failure_and_stop": {
+    "fail_closed_on": ["missing_authority", "missing_source", "unsatisfied_dependency", "ambiguous_order", "architecture_conflict", "unsafe_behavior", "failed_acceptance_or_tests"],
+    "failure_boundary": "current Robot task scope only"
+  },
+  "recovery": {
+    "resume_requires_canonical_reread": true,
+    "verify_prior_evidence": true,
+    "replay_completed_effects": false
+  },
+  "backend_compatibility": {
+    "handoff_ref": "SRC-CONTRACT-PM01-BE-001",
+    "accepted_shapes": ["request.v1", "result.v1", "error.v1"],
+    "correlation_required": true,
+    "failure_classes": ["retryable", "terminal"],
+    "unresolved_runtime_properties_remain_gated": ["timeout", "retry", "idempotency", "auth", "version"]
+  },
+  "forbidden_runtime_complexity": ["queue", "worker", "saas_orchestrator", "distributed_runtime_engine", "provider_client", "database_persistence", "deployment"]
+}
