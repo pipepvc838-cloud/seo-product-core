@@ -35,7 +35,9 @@ jobs:
 
           robot_path_allowed() {
             case "$1" in
-              robot/README.md|robot/contracts/*|robot/tests/contracts/*) return 0 ;;
+              robot/local_seam/provider/*|robot/local_seam/providers/*|robot/local_seam/network/*|robot/local_seam/http/*|robot/local_seam/api/*|robot/local_seam/database/*|robot/local_seam/storage/*|robot/local_seam/queue/*|robot/local_seam/queues/*|robot/local_seam/worker/*|robot/local_seam/workers/*|robot/local_seam/background/*|robot/local_seam/service/*|robot/local_seam/services/*|robot/local_seam/auth/*|robot/local_seam/secrets/*|robot/local_seam/deploy/*|robot/local_seam/deployment/*|robot/local_seam/production/*|robot/local_seam/runtime/*) return 1 ;;
+              robot/tests/local_seam/provider/*|robot/tests/local_seam/providers/*|robot/tests/local_seam/network/*|robot/tests/local_seam/http/*|robot/tests/local_seam/api/*|robot/tests/local_seam/database/*|robot/tests/local_seam/storage/*|robot/tests/local_seam/queue/*|robot/tests/local_seam/queues/*|robot/tests/local_seam/worker/*|robot/tests/local_seam/workers/*|robot/tests/local_seam/background/*|robot/tests/local_seam/service/*|robot/tests/local_seam/services/*|robot/tests/local_seam/auth/*|robot/tests/local_seam/secrets/*|robot/tests/local_seam/deploy/*|robot/tests/local_seam/deployment/*|robot/tests/local_seam/production/*|robot/tests/local_seam/runtime/*) return 1 ;;
+              robot/README.md|robot/contracts/*|robot/tests/contracts/*|robot/local_seam/*|robot/tests/local_seam/*) return 0 ;;
               *) return 1 ;;
             esac
           }
@@ -86,13 +88,36 @@ jobs:
           robot_path_allowed robot/README.md
           robot_path_allowed robot/contracts/example.json
           robot_path_allowed robot/tests/contracts/example.json
+          robot_path_allowed robot/local_seam/invoke.py
+          robot_path_allowed robot/tests/local_seam/test_invoke.py
           ! robot_path_allowed robot/runtime/engine.php
           ! robot_path_allowed robot/workers/worker.php
           ! robot_path_allowed robot/queue/job.php
           ! robot_path_allowed robot/services/service.php
           ! robot_path_allowed robot/provider/client.php
+          ! robot_path_allowed robot/providers/client.php
+          ! robot_path_allowed robot/api/server.py
+          ! robot_path_allowed robot/network/client.py
           ! robot_path_allowed robot/database/state.json
+          ! robot_path_allowed robot/storage/state.json
+          ! robot_path_allowed robot/local_seam/provider/client.py
+          ! robot_path_allowed robot/local_seam/providers/client.py
+          ! robot_path_allowed robot/local_seam/network/client.py
+          ! robot_path_allowed robot/local_seam/http/client.py
+          ! robot_path_allowed robot/local_seam/api/server.py
+          ! robot_path_allowed robot/local_seam/database/store.py
+          ! robot_path_allowed robot/local_seam/storage/store.py
+          ! robot_path_allowed robot/local_seam/queue/job.py
+          ! robot_path_allowed robot/local_seam/workers/worker.py
+          ! robot_path_allowed robot/local_seam/services/service.py
+          ! robot_path_allowed robot/local_seam/background/task.py
+          ! robot_path_allowed robot/local_seam/auth/handler.py
+          ! robot_path_allowed robot/local_seam/secrets/key.txt
+          ! robot_path_allowed robot/local_seam/deployment/release.py
+          ! robot_path_allowed robot/local_seam/production/integration.py
+          ! robot_path_allowed robot/local_seam/runtime/engine.py
 
           python3 backend/tests/contracts/validate_contracts.py
+          python3 backend/tests/seam/test_local_seam.py
           python3 robot/tests/contracts/validate_contracts.py
           ! grep -RIlE '(BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,})' . --exclude-dir=.git
