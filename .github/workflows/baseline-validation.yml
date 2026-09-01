@@ -23,5 +23,28 @@ jobs:
           for path in src app application lib services api runtime vendor node_modules deploy deployment database migrations schema; do
             test ! -e "$path"
           done
-          ! find backend robot -type f ! -name README.md -print -quit | grep -q .
+
+          backend_path_allowed() {
+            case "$1" in
+              backend/README.md|backend/contracts/*|backend/tests/contracts/*) return 0 ;;
+              *) return 1 ;;
+            esac
+          }
+
+          while IFS= read -r file; do
+            if ! backend_path_allowed "$file"; then
+              echo "Forbidden backend file: $file"
+              exit 1
+            fi
+          done < <(find backend -type f -print)
+
+          backend_path_allowed backend/README.md
+          backend_path_allowed backend/contracts/example.json
+          backend_path_allowed backend/tests/contracts/example.json
+          ! backend_path_allowed backend/runtime.php
+          ! backend_path_allowed backend/api/server.php
+          ! backend_path_allowed backend/services/foo.txt
+          ! backend_path_allowed backend/database/example.json
+
+          ! find robot -type f ! -path 'robot/README.md' -print -quit | grep -q .
           ! grep -RIlE '(BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,})' . --exclude-dir=.git
