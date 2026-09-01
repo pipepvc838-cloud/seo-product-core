@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate bootstrap governance ceiling
+      - name: Validate bounded implementation governance ceiling
         shell: bash
         run: |
           set -euo pipefail
@@ -31,12 +31,26 @@ jobs:
             esac
           }
 
+          robot_path_allowed() {
+            case "$1" in
+              robot/README.md|robot/contracts/*|robot/tests/contracts/*) return 0 ;;
+              *) return 1 ;;
+            esac
+          }
+
           while IFS= read -r file; do
             if ! backend_path_allowed "$file"; then
               echo "Forbidden backend file: $file"
               exit 1
             fi
           done < <(find backend -type f -print)
+
+          while IFS= read -r file; do
+            if ! robot_path_allowed "$file"; then
+              echo "Forbidden robot file: $file"
+              exit 1
+            fi
+          done < <(find robot -type f -print)
 
           backend_path_allowed backend/README.md
           backend_path_allowed backend/contracts/example.json
@@ -46,5 +60,14 @@ jobs:
           ! backend_path_allowed backend/services/foo.txt
           ! backend_path_allowed backend/database/example.json
 
-          ! find robot -type f ! -path 'robot/README.md' -print -quit | grep -q .
+          robot_path_allowed robot/README.md
+          robot_path_allowed robot/contracts/example.json
+          robot_path_allowed robot/tests/contracts/example.json
+          ! robot_path_allowed robot/runtime/engine.php
+          ! robot_path_allowed robot/workers/worker.php
+          ! robot_path_allowed robot/queue/job.php
+          ! robot_path_allowed robot/services/service.php
+          ! robot_path_allowed robot/provider/client.php
+          ! robot_path_allowed robot/database/state.json
+
           ! grep -RIlE '(BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,})' . --exclude-dir=.git
