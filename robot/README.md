@@ -2,8 +2,14 @@
 
 Owner: CHAT-ROBOT-03.
 
-This module is reserved for future deterministic Product-M01 Robot implementation accepted under ROBOT-001. BOOT-REPO-002 creates no Robot engine or runtime implementation.
+This module contains only the bounded deterministic Product-M01 Robot contract/state-model artifacts authorized by ROBOT-IMPL-001. It does not implement a Robot runtime engine, queue, worker, SaaS orchestration, provider/API client, persistence/database layer, deployment, secrets, or production access.
 
-The Robot boundary owns only deterministic task identity, dependency/state semantics, ordering, idempotency, retry, duplicate prevention, recovery/resume behavior, and tests later authorized by Manager-approved tasks. It does not own Backend interface implementation, WordPress plugin lifecycle, Intelligence authority, Operations/provider governance, secrets, or deployment authority.
+## Contract surface
 
-Any future Robot code requires ACTIVE task-scoped sources/capabilities and accepted implementation authority.
+- `contracts/execution-model.v1.json` — deterministic task identity, dependency satisfaction, ordering, eligibility/state transitions, idempotency, bounded retry, duplicate prevention, fail-closed rules, recovery/resume, and Backend handoff compatibility.
+- `tests/contracts/fixtures.v1.json` — fixed non-secret deterministic fixtures.
+- `tests/contracts/validate_contracts.py` — deterministic validator for DAG/cycle rejection, ordering, transitions, retry, idempotency, recovery, and Backend handoff reference consistency.
+
+Backend contract consumption is exclusively through `SRC-CONTRACT-PM01-BE-001`; this Robot module has no `backend/**` repository authority.
+
+Any future executable Robot runtime requires a separate Manager-approved task and capability.
