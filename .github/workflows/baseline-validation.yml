@@ -26,7 +26,9 @@ jobs:
 
           backend_path_allowed() {
             case "$1" in
-              backend/README.md|backend/contracts/*|backend/tests/contracts/*) return 0 ;;
+              backend/seam/provider/*|backend/seam/network/*|backend/seam/api/*|backend/seam/database/*|backend/seam/storage/*|backend/seam/queue/*|backend/seam/queues/*|backend/seam/worker/*|backend/seam/workers/*|backend/seam/background/*|backend/seam/service/*|backend/seam/services/*|backend/seam/auth/*|backend/seam/secrets/*|backend/seam/deploy/*|backend/seam/deployment/*|backend/seam/production/*|backend/seam/runtime/*) return 1 ;;
+              backend/tests/seam/provider/*|backend/tests/seam/network/*|backend/tests/seam/api/*|backend/tests/seam/database/*|backend/tests/seam/storage/*|backend/tests/seam/queue/*|backend/tests/seam/queues/*|backend/tests/seam/worker/*|backend/tests/seam/workers/*|backend/tests/seam/background/*|backend/tests/seam/service/*|backend/tests/seam/services/*|backend/tests/seam/auth/*|backend/tests/seam/secrets/*|backend/tests/seam/deploy/*|backend/tests/seam/deployment/*|backend/tests/seam/production/*|backend/tests/seam/runtime/*) return 1 ;;
+              backend/README.md|backend/contracts/*|backend/tests/contracts/*|backend/seam/*|backend/tests/seam/*) return 0 ;;
               *) return 1 ;;
             esac
           }
@@ -55,10 +57,31 @@ jobs:
           backend_path_allowed backend/README.md
           backend_path_allowed backend/contracts/example.json
           backend_path_allowed backend/tests/contracts/example.json
+          backend_path_allowed backend/seam/dispatcher.py
+          backend_path_allowed backend/tests/seam/test_dispatcher.py
           ! backend_path_allowed backend/runtime.php
           ! backend_path_allowed backend/api/server.php
           ! backend_path_allowed backend/services/foo.txt
           ! backend_path_allowed backend/database/example.json
+          ! backend_path_allowed backend/provider/client.py
+          ! backend_path_allowed backend/network/client.py
+          ! backend_path_allowed backend/queue/job.py
+          ! backend_path_allowed backend/workers/worker.py
+          ! backend_path_allowed backend/auth/credentials.py
+          ! backend_path_allowed backend/deploy/release.yml
+          ! backend_path_allowed backend/production/integration.py
+          ! backend_path_allowed backend/seam/provider/client.py
+          ! backend_path_allowed backend/seam/network/client.py
+          ! backend_path_allowed backend/seam/api/server.py
+          ! backend_path_allowed backend/seam/database/store.py
+          ! backend_path_allowed backend/seam/storage/store.py
+          ! backend_path_allowed backend/seam/queue/job.py
+          ! backend_path_allowed backend/seam/workers/worker.py
+          ! backend_path_allowed backend/seam/services/service.py
+          ! backend_path_allowed backend/seam/auth/handler.py
+          ! backend_path_allowed backend/seam/deployment/release.py
+          ! backend_path_allowed backend/seam/production/integration.py
+          ! backend_path_allowed backend/seam/runtime/engine.py
 
           robot_path_allowed robot/README.md
           robot_path_allowed robot/contracts/example.json
@@ -70,4 +93,6 @@ jobs:
           ! robot_path_allowed robot/provider/client.php
           ! robot_path_allowed robot/database/state.json
 
+          python3 backend/tests/contracts/validate_contracts.py
+          python3 robot/tests/contracts/validate_contracts.py
           ! grep -RIlE '(BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,})' . --exclude-dir=.git
