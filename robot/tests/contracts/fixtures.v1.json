@@ -1,0 +1,34 @@
+{
+  "valid_dag": [
+    {"task_id": "ROBOT-A", "sequence": 10, "dependencies": [], "state": "DONE"},
+    {"task_id": "ROBOT-B", "sequence": 20, "dependencies": ["ROBOT-A"], "state": "READY"},
+    {"task_id": "ROBOT-C", "sequence": 20, "dependencies": ["ROBOT-A"], "state": "READY"}
+  ],
+  "cycle": [
+    {"task_id": "A", "sequence": 10, "dependencies": ["B"], "state": "READY"},
+    {"task_id": "B", "sequence": 20, "dependencies": ["A"], "state": "READY"}
+  ],
+  "ordering_expected": ["ROBOT-B", "ROBOT-C"],
+  "transition_cases": [
+    {"from": "READY", "to": "IN_PROGRESS", "valid": true},
+    {"from": "IN_PROGRESS", "to": "TESTING", "valid": true},
+    {"from": "TESTING", "to": "DONE", "valid": true},
+    {"from": "DONE", "to": "IN_PROGRESS", "valid": false},
+    {"from": "PLANNED", "to": "IN_PROGRESS", "valid": false}
+  ],
+  "retry_cases": [
+    {"class": "retryable_transient", "retry": true},
+    {"class": "terminal", "retry": false},
+    {"class": "authority", "retry": false},
+    {"class": "dependency", "retry": false}
+  ],
+  "idempotency_cases": [
+    {"state": "DONE", "same_key": true, "execute": false},
+    {"state": "IN_PROGRESS", "same_key": true, "execute": false},
+    {"state": "READY", "same_key": true, "execute": true}
+  ],
+  "recovery_cases": [
+    {"state": "BLOCKED", "prior_effect_complete": true, "replay": false},
+    {"state": "READY", "prior_effect_complete": false, "replay": true}
+  ]
+}
