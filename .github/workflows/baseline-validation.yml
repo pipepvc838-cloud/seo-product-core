@@ -1,0 +1,27 @@
+name: Baseline Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  bootstrap-boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate bootstrap governance ceiling
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f AGENTS.md
+          test -f backend/README.md
+          test -f robot/README.md
+          test -f docs/architecture-boundaries.md
+          test -f docs/change-control.md
+          test -f tests/README.md
+          for path in src app application lib services api runtime vendor node_modules deploy deployment database migrations schema; do
+            test ! -e "$path"
+          done
+          ! find backend robot -type f ! -name README.md -print -quit | grep -q .
+          ! grep -RIlE '(BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,})' . --exclude-dir=.git
