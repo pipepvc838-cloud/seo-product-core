@@ -1,0 +1,54 @@
+{
+  "artifact": "product-m01.backend.external-invocation",
+  "contract_version": "1.0",
+  "boundary": {
+    "owner": "Backend",
+    "operations_governance_owner": "Operations",
+    "implementation_rule": "External invocation implementation MUST remain behind this provider-neutral Backend boundary.",
+    "excluded_provider_transport_owners": ["Robot", "WordPress", "Intelligence"],
+    "provider_neutral": true
+  },
+  "envelopes": {
+    "request_contract": "backend/contracts/request.v1.json",
+    "result_contract": "backend/contracts/result.v1.json",
+    "error_contract": "backend/contracts/error.v1.json",
+    "reuse_rule": "Accepted Backend envelope semantics are referenced and MUST NOT be redefined here."
+  },
+  "identity_preservation": {
+    "required": ["request_id", "task_id", "correlation_id"],
+    "rule": "External invocation layers MUST preserve these identities end-to-end and MUST NOT silently regenerate or replace them."
+  },
+  "outcome_compatibility": {
+    "success_status": "SUCCESS",
+    "error_status": "ERROR",
+    "error_classes": ["RETRYABLE", "TERMINAL"]
+  },
+  "unresolved_properties": {
+    "transport_protocol": {"state": "EVIDENCE_REQUIRED", "value": null},
+    "authentication_mapping": {"state": "EVIDENCE_REQUIRED", "value": null},
+    "timeout": {"state": "EVIDENCE_REQUIRED", "value": null},
+    "retry_backoff": {"state": "EVIDENCE_REQUIRED", "value": null},
+    "backend_max_attempts": {"state": "EVIDENCE_REQUIRED", "value": null},
+    "idempotency_behavior": {"state": "EVIDENCE_REQUIRED", "value": null},
+    "protocol_api_schema_compatibility": {"state": "EVIDENCE_REQUIRED", "value": null},
+    "transport_error_mapping_details": {"state": "EVIDENCE_REQUIRED", "value": null}
+  },
+  "forbidden_concrete_assumptions": [
+    "HTTP",
+    "REST",
+    "gRPC",
+    "webhook",
+    "queue_transport",
+    "specific_endpoint",
+    "specific_provider",
+    "api_token_scheme",
+    "OAuth",
+    "database_storage_mechanism",
+    "deployment_target",
+    "concrete_protocol_version"
+  ],
+  "implementation": {
+    "authorized": false,
+    "external_io": false
+  }
+}
